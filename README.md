@@ -6,7 +6,7 @@
 
 AI-enhanced Course Management System with complete CRUD operations and modern responsive design.
 
-🌐 **[Live Demo](https://your-username.github.io/course-management-system-ai/)**
+🌐 **[Live Demo](https://rakeshmerala16.github.io/course-management-system-AI/)**
 
 ## ✨ Features
 
