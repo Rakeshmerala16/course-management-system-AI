@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management System - EduManage Pro AI</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h2>📚 EduManage Pro AI</h2>
+                    <small id="data-status">🤖 AI-Powered • Data Synced</small>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+                    <button class="nav-btn" data-section="courses">Courses</button>
+                    <button class="nav-btn" data-section="students">Students</button>
+                    <button class="nav-btn" data-section="instructors">Instructors</button>
+                    <button class="nav-btn" data-section="enrollments">Enrollments</button>
+                </nav>
+                <div class="header-actions">
+                    <button class="btn btn--sm btn--outline ai-toggle" onclick="cms.toggleAI()">
+                        <span id="ai-status">🤖 AI: ON</span>
+                    </button>
+                    <button class="btn btn--sm btn--outline" onclick="cms.exportData()">📤 Export</button>
+                    <button class="btn btn--sm btn--outline" onclick="cms.importData()">📥 Import</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="section-header">
+                    <h1>AI-Powered Dashboard</h1>
+                    <p class="section-description">Complete overview with intelligent insights</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-content">
+                            <h3 id="total-courses">0</h3>
+                            <p>Total Courses</p>
+                            <div class="ai-insight" id="courses-insight"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 id="total-students">0</h3>
+                            <p>Total Students</p>
+                            <div class="ai-insight" id="students-insight"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍🏫</div>
+                        <div class="stat-content">
+                            <h3 id="total-instructors">0</h3>
+                            <p>Total Instructors</p>
+                            <div class="ai-insight" id="instructors-insight"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3 id="total-enrollments">0</h3>
+                            <p>Active Enrollments</p>
+                            <div class="ai-insight" id="enrollments-insight"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>🤖 AI Analytics Dashboard</h3>
+                            <span class="ai-badge">AI-POWERED</span>
+                        </div>
+                        <div class="card__body">
+                            <div class="chart-container" style="position: relative; height: 300px;">
+                                <canvas id="popularityChart"></canvas>
+                            </div>
+                            <div class="ai-recommendations" id="ai-dashboard-recommendations">
+                                <div class="loading">Generating AI insights...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div class="card__body">
+                            <div id="recent-activity">
+                                <div class="activity-item">
+                                    <span class="activity-icon">🤖</span>
+                                    <div class="activity-content">
+                                        <p>AI system initialized and ready</p>
+                                        <small>Just now</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="quick-actions">
+                                <button class="btn btn--primary btn--full-width" onclick="cms.addCourse()">➕ Add New Course</button>
+                                <button class="btn btn--secondary btn--full-width" onclick="cms.addStudent()">👤 Add New Student</button>
+                                <button class="btn btn--secondary btn--full-width" onclick="cms.addInstructor()">👨‍🏫 Add New Instructor</button>
+                                <button class="btn btn--outline btn--full-width" onclick="showModal('enrollmentModal')">📝 Manage Enrollments</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Courses Section -->
+            <section id="courses" class="section">
+                <div class="section-header">
+                    <h1>Course Management</h1>
+                    <button class="btn btn--primary" onclick="cms.addCourse()">Add New Course</button>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="course-search" class="form-control" placeholder="Search courses...">
+                    <select id="course-category-filter" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="Programming">Programming</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Design">Design</option>
+                    </select>
+                    <select id="course-status-filter" class="form-control">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+                <div id="courses-grid" class="courses-grid"></div>
+            </section>
+
+            <!-- Students Section -->
+            <section id="students" class="section">
+                <div class="section-header">
+                    <h1>Student Management</h1>
+                    <button class="btn btn--primary" onclick="cms.addStudent()">Add New Student</button>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="student-search" class="form-control" placeholder="Search students...">
+                    <select id="student-status-filter" class="form-control">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div id="students-grid" class="students-grid"></div>
+            </section>
+
+            <!-- Instructors Section -->
+            <section id="instructors" class="section">
+                <div class="section-header">
+                    <h1>Instructor Management</h1>
+                    <button class="btn btn--primary" onclick="cms.addInstructor()">Add New Instructor</button>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="instructor-search" class="form-control" placeholder="Search instructors...">
+                    <select id="instructor-department-filter" class="form-control">
+                        <option value="">All Departments</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Business">Business</option>
+                        <option value="Design">Design</option>
+                    </select>
+                </div>
+
+                <div id="instructors-grid" class="instructors-grid"></div>
+            </section>
+
+            <!-- Enrollments Section -->
+            <section id="enrollments" class="section">
+                <div class="section-header">
+                    <h1>Enrollment Management</h1>
+                    <button class="btn btn--primary" onclick="showModal('enrollmentModal')">New Enrollment</button>
+                </div>
+
+                <div class="filters">
+                    <input type="text" id="enrollment-search" class="form-control" placeholder="Search enrollments...">
+                    <select id="enrollment-course-filter" class="form-control">
+                        <option value="">All Courses</option>
+                    </select>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <div class="table-container">
+                            <table id="enrollments-table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Course</th>
+                                        <th>Instructor</th>
+                                        <th>Enrollment Date</th>
+                                        <th>Progress</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="modal hidden">
+        <div class="modal-content modal-content--large">
+            <div class="modal-header">
+                <h2 id="courseModalTitle">Add New Course</h2>
+                <button class="modal-close" onclick="hideModal('courseModal')">&times;</button>
+            </div>
+            <form id="courseForm" class="modal-body">
+                <input type="hidden" id="courseId">
+                <div class="form-group">
+                    <label class="form-label">Course Name *</label>
+                    <input type="text" id="courseName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <div class="form-label-with-ai">
+                        <label class="form-label">Description *</label>
+                        <button type="button" class="btn btn--sm ai-generate-btn" onclick="cms.generateAIDescription()" id="ai-description-btn">
+                            <span class="ai-loading hidden">🤖 Generating...</span>
+                            <span class="ai-default">🤖 Generate AI Description</span>
+                        </button>
+                    </div>
+                    <textarea id="courseDescription" class="form-control" rows="4" required></textarea>
+                    <div class="ai-generated-indicator hidden" id="description-ai-indicator">
+                        <span class="ai-badge">🤖 AI-GENERATED</span>
+                        <span class="ai-confidence">Confidence: <span id="description-confidence">85%</span></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Instructor *</label>
+                        <select id="courseInstructor" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category *</label>
+                        <select id="courseCategory" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="Programming">Programming</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Design">Design</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Capacity *</label>
+                        <input type="number" id="courseCapacity" class="form-control" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Price ($) *</label>
+                        <input type="number" id="coursePrice" class="form-control" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Start Date *</label>
+                        <input type="date" id="courseStartDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Date *</label>
+                        <input type="date" id="courseEndDate" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Duration *</label>
+                        <input type="text" id="courseDuration" class="form-control" placeholder="e.g., 8 weeks" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Level *</label>
+                        <select id="courseLevel" class="form-control" required>
+                            <option value="">Select Level</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status *</label>
+                    <select id="courseStatus" class="form-control" required>
+                        <option value="Active">Active</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="ai-suggestions" id="course-ai-suggestions"></div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="hideModal('courseModal')">Cancel</button>
+                <button type="submit" form="courseForm" class="btn btn--primary" id="courseSubmitBtn">Add Course</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Modal -->
+    <div id="studentModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="studentModalTitle">Add New Student</h2>
+                <button class="modal-close" onclick="hideModal('studentModal')">&times;</button>
+            </div>
+            <form id="studentForm" class="modal-body">
+                <input type="hidden" id="studentId">
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" id="studentName" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" id="studentEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone *</label>
+                        <input type="tel" id="studentPhone" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <textarea id="studentAddress" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Level</label>
+                        <select id="studentLevel" class="form-control">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status *</label>
+                        <select id="studentStatus" class="form-control" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Interests</label>
+                    <input type="text" id="studentInterests" class="form-control" placeholder="e.g., Programming, Design">
+                </div>
+                <div class="ai-recommendations" id="student-recommendations"></div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="hideModal('studentModal')">Cancel</button>
+                <button type="submit" form="studentForm" class="btn btn--primary" id="studentSubmitBtn">Add Student</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructor Modal -->
+    <div id="instructorModal" class="modal hidden">
+        <div class="modal-content modal-content--large">
+            <div class="modal-header">
+                <h2 id="instructorModalTitle">Add New Instructor</h2>
+                <button class="modal-close" onclick="hideModal('instructorModal')">&times;</button>
+            </div>
+            <form id="instructorForm" class="modal-body">
+                <input type="hidden" id="instructorId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="instructorName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" id="instructorEmail" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" id="instructorPhone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Department *</label>
+                        <select id="instructorDepartment" class="form-control" required>
+                            <option value="">Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Business">Business</option>
+                            <option value="Design">Design</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Mathematics">Mathematics</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Expertise Areas *</label>
+                    <input type="text" id="instructorExpertise" class="form-control" placeholder="e.g., JavaScript, React, Node.js" required>
+                    <small class="form-hint">Separate skills with commas</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Years of Experience *</label>
+                        <input type="number" id="instructorExperience" class="form-control" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status *</label>
+                        <select id="instructorStatus" class="form-control" required>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-label-with-ai">
+                        <label class="form-label">Bio/Description</label>
+                        <button type="button" class="btn btn--sm ai-generate-btn" onclick="cms.generateInstructorBio()" id="ai-bio-btn">
+                            <span class="ai-loading hidden">🤖 Generating...</span>
+                            <span class="ai-default">🤖 Generate AI Bio</span>
+                        </button>
+                    </div>
+                    <textarea id="instructorBio" class="form-control" rows="3" placeholder="Brief description about the instructor..."></textarea>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="hideModal('instructorModal')">Cancel</button>
+                <button type="submit" form="instructorForm" class="btn btn--primary" id="instructorSubmitBtn">Add Instructor</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrollment Modal -->
+    <div id="enrollmentModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🤖 Smart Enrollment Assistant</h2>
+                <button class="modal-close" onclick="hideModal('enrollmentModal')">&times;</button>
+            </div>
+            <form id="enrollmentForm" class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Student *</label>
+                    <select id="enrollmentStudent" class="form-control" required onchange="cms.updateEnrollmentRecommendations()"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Course *</label>
+                    <select id="enrollmentCourse" class="form-control" required></select>
+                </div>
+                <div class="ai-enrollment-suggestions" id="enrollment-ai-suggestions"></div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="hideModal('enrollmentModal')">Cancel</button>
+                <button type="submit" form="enrollmentForm" class="btn btn--primary">Enroll Student</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content modal-content--small">
+            <div class="modal-header">
+                <h2>Confirm Action</h2>
+                <button class="modal-close" onclick="hideModal('confirmModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure you want to perform this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="hideModal('confirmModal')">Cancel</button>
+                <button type="button" class="btn btn--primary" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Import Data</h2>
+                <button class="modal-close" onclick="hideModal('importModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Select JSON File</label>
+                    <input type="file" id="importFile" class="form-control" accept=".json">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Or Paste JSON Data</label>
+                    <textarea id="importData" class="form-control" rows="6" placeholder='{"courses": [], "students": [], ...}'></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" onclick="hideModal('importModal')">Cancel</button>
+                <button type="button" class="btn btn--primary" onclick="cms.processImport()">Import Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+        <button class="toast-close" onclick="hideToast()">&times;</button>
+    </div>
+
+    <!-- AI Processing Overlay -->
+    <div id="ai-overlay" class="ai-overlay hidden">
+        <div class="ai-processing">
+            <div class="ai-spinner"></div>
+            <h3>🤖 AI Processing...</h3>
+            <p id="ai-process-message">Analyzing data and generating insights</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
